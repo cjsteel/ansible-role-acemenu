@@ -1,0 +1,44 @@
+---
+# file: roles/acemenu/defaults/main.yml
+
+
+acemenu_debug            : true        # not used at this time
+
+acemenu_version          : '0.0.1'
+acemenu_version_pinning  : false       # not in use at this time
+
+
+acemenu_role_name         : 'acemenu'       # not in use at this time
+acemenu_state             : 'present'
+acemenu_install_type      : 'skel'
+acemenu_install_type_user : False #True  # If you want to install on per user basis as well
+acemenu_target_user       : 'csteel'
+
+# user installs
+
+acemenu_deployment_user : '{{ project_deployment_user_name }}'
+acemenu_uid_min         : 1000
+acemenu_uid_max         : 1000
+
+
+# directories
+
+acemenu_personal_bin    : 'bin'
+acemenu_dir_name        : 'acemenu'
+acemenu_bin_dir         : '{{ acemenu_personal_bin }}/acemenu'
+acemenu_help_dir        : '{{ acemenu_bin_dir }}/helpfiles'
+
+# files
+
+acemenu_menu_template_src      : '{{ fact_role_path }}/templates/{{ ansible_distribution }}/{{ ansible_distribution_version }}/acemenu/menu.sh.j2'
+acemenu_menuitems_blank_path   : '{{ fact_role_path }}/templates/{{ ansible_distribution }}/{{ ansible_distribution_version }}/acemenu/menuitems.j2'
+acemenu_about_description_path : '{{ fact_role_path }}/templates/{{ ansible_distribution }}/{{ ansible_distribution_version }}/acemenu/helpfiles/about.txt'
+
+acemenu_user_homes:
+
+  realuser_home_1:
+
+    home : '/home/users/{{ acemenu_target_user }}'
+    owner: '{{ acemenu_target_user }}'
+    group: '{{ acemenu_target_user }}'
+    mode : '0775'

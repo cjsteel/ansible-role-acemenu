@@ -1,0 +1,72 @@
+---
+# file: roles/acemenu/tests/vagrant.yml
+
+- hosts: all
+  remote_user: ubuntu
+  become: true
+  pre_tasks:
+
+  pre_tasks:
+
+    - set_fact: fact_controller_user="{{ lookup('env','USER') }}"
+    - debug: var=fact_controller_user
+
+    - set_fact: fact_controller_home="{{ lookup('env','HOME') }}"
+    - debug: var=fact_controller_home
+
+    - set_fact: fact_project_path="{{ lookup('pipe','pwd') }}"
+    - debug: var=fact_project_path
+
+    - set_fact: fact_role_path="{{ lookup('pipe','pwd') }}/roles/acemenu"
+    - debug: var=fact_role_path
+
+  vars:
+
+    - acemenu_remote_user       : 'ubuntu'
+    - acemenu_debug             : true        # not used at this time
+
+    - acemenu_version            : '0.0.1'
+    - acemenu_version_pinning    : false       # not in use at this time
+
+    - acemenu_role_name         : 'acemenu'       # not in use at this time
+    - acemenu_state             : 'present'
+    - acemenu_install_type      : 'skel'
+#    - acemenu_install_type_user : True  # If you wnat to install on per user basis as well
+    - acemenu_target_user: 'csteel'
+    # user installs
+
+    - acemenu_deployment_user : 'ubuntu'
+    - acemenu_uid_min         : 1000
+    - acemenu_uid_max         : 1000
+
+    # directories
+
+    - acemenu_personal_bin    : 'bin'
+    - acemenu_dir_name        : 'acemenu'
+    - acemenu_bin_dir         : '{{ acemenu_personal_bin }}/acemenu'
+    - acemenu_help_dir        : '{{ acemenu_bin_dir }}/helpfiles'
+
+    - fsl_profile_blank_path : 'roles/{{ fsl_role_name }}/files/profile'
+
+# files
+
+    - acemenu_menu_template_src    : '../templates/{{ ansible_distribution }}/{{ ansible_distribution_version }}/acemenu/menu.sh.j2'
+
+# why cant these be removed?
+
+    - acemenu_menuitems_blank_path   : '../files/acemenu/menuitems.txt'
+    - acemenu_about_description_path : '../files/acemenu/helpfiles/about.txt'
+
+    - acemenu_user_homes:
+
+        realuser_home_1:
+
+          home : '/home/{{ acemenu_remote_user }}'
+          owner: '{{ acemenu_remote_user }}'
+          group: '{{ acemenu_remote_user }}'
+          mode : '0755'
+
+  roles:
+    - ../../
+  
+

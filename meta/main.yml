@@ -1,0 +1,266 @@
+dependencies:
+
+  - role: skel
+    become: true
+    tags: ['acemenu', 'skel']
+    skel_entries:
+
+# ensure for directories
+
+      - name: "Ensure for directory /etc/skel/bin"
+        path  : '/etc/skel/bin'
+        user  : 'root'
+        group : 'root'
+        mode: '0755'
+        state: 'directory' # options are 'directory' or 'absent'
+
+# ensure for any clones
+
+      - name : "git clone /etc/skel/bin/acemenu repository"
+        repo  : 'https://github.com/cjsteel/script-bash-acemenu.git'
+        dest  : '/etc/skel/bin/acemenu'
+        clone : yes
+
+# ensure for any touch'es ro files
+
+# ensure for any file copies
+# notice that the following command looks for .bash_aliases in the skel roles files directory.
+      - name : "ensure for /etc/skel/.bash_aliases"
+        path : '/etc/skel/.bash_aliases'
+        src : 'files/Ubuntu/16.04/etc/skel/.bash_aliases'
+#        src  : 'files/bash_aliases'
+        force : no
+        state: "copy"
+
+# ensure for any templates
+
+#      - name : 'template /etc/skel/bin/acemenu/menu.sh'
+#        src  : '{{ acemenu_menu_template_src }}'
+#        path : '/etc/skel/{{ acemenu_bin_dir }}/menu.sh'
+#        mode : '0755'
+#        state: 'template' # options are 'template' or 'absent'
+
+# ensure for any blockinfile's
+
+      - name: "ensure for /etc/skel/.bash_aliases entry"
+        type: 'blockinfile'
+        marker: '## {mark} ANSIBLE MANAGED BLOCK in .bash_aliases entry for acemenu'
+        path  : "/etc/skel/.bash_aliases"
+        insertafter: "EOF"
+        block: |
+          # inform user about acemenu
+          # 
+          echo "type "menu" for latest ace menu options"
+          #
+        state: "present"
+
+#      - name: "ensure add ~/bin and ~/.local/bin to users path"
+#        type: 'blockinfile'
+#        marker: '## {mark} ANSIBLE MANAGED BLOCK in .bash_aliases entry for myrepos'
+#        path  : "/etc/skel/.bash_aliases"
+#        insertafter: "EOF"
+#        block: |
+#          #
+#          # set PATH so it includes user's private bin directories
+#          PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+#          #
+#        state: "present"
+
+# ensure for any non relative sym links
+
+      - name : 'create relative link to acemenu/menu.sh'
+        link_name   : 'menu'
+        link_target : 'acemenu/menu.sh'
+        link_dir    : '/etc/skel/bin'
+        state: 'relative_link'
+
+galaxy_info:
+  author: Christopher Steel
+  description: acmenu adds user menus, LDAP compatible
+  company: The McGill Centre for Integrative Neuroscience (MCIN)
+
+  # If the issue tracker for your role is not on github, uncomment the
+  # next line and provide a value
+  # issue_tracker_url: http://example.com/issue/tracker
+
+  # Some suggested licenses:
+  # - BSD (default)
+  # - MIT
+  # - GPLv2
+  # - GPLv3
+  # - Apache
+  # - CC-BY
+  license: MIT
+
+  min_ansible_version: 2.1.1.0
+
+  # Optionally specify the branch Galaxy will use when accessing the GitHub
+  # repo for this role. During role install, if no tags are available,
+  # Galaxy will use this branch. During import Galaxy will access files on
+  # this branch. If travis integration is cofigured, only notification for this
+  # branch will be accepted. Otherwise, in all cases, the repo's default branch
+  # (usually master) will be used.
+  #github_branch:
+
+  #
+  # Below are all platforms currently available. Just uncomment
+  # the ones that apply to your role. If you don't see your
+  # platform on this list, let us know and we'll get it added!
+  #
+  platforms:
+    - name: EL
+      versions:
+  #  - all
+  #  - 5
+  #  - 6
+        - 7
+  #- name: GenericUNIX
+  #  versions:
+  #  - all
+  #  - any
+  #- name: OpenBSD
+  #  versions:
+  #  - all
+  #  - 5.6
+  #  - 5.7
+  #  - 5.8
+  #  - 5.9
+  #  - 6.0
+  #- name: Fedora
+  #  versions:
+  #  - all
+  #  - 16
+  #  - 17
+  #  - 18
+  #  - 19
+  #  - 20
+  #  - 21
+  #  - 22
+  #  - 23
+  #- name: opensuse
+  #  versions:
+  #  - all
+  #  - 12.1
+  #  - 12.2
+  #  - 12.3
+  #  - 13.1
+  #  - 13.2
+  #- name: MacOSX
+  #  versions:
+  #  - all
+  #  - 10.10
+  #  - 10.11
+  #  - 10.12
+  #  - 10.7
+  #  - 10.8
+  #  - 10.9
+  #- name: IOS
+  #  versions:
+  #  - all
+  #  - any
+  #- name: Solaris
+  #  versions:
+  #  - all
+  #  - 10
+  #  - 11.0
+  #  - 11.1
+  #  - 11.2
+  #  - 11.3
+  #- name: SmartOS
+  #  versions:
+  #  - all
+  #  - any
+  #- name: eos
+  #  versions:
+  #  - all
+  #  - Any
+  #- name: Windows
+  #  versions:
+  #  - all
+  #  - 2012R2
+  #- name: Amazon
+  #  versions:
+  #  - all
+  #  - 2013.03
+  #  - 2013.09
+  #- name: GenericBSD
+  #  versions:
+  #  - all
+  #  - any
+  #- name: Junos
+  #  versions:
+  #  - all
+  #  - any
+  #- name: FreeBSD
+  #  versions:
+  #  - all
+  #  - 10.0
+  #  - 10.1
+  #  - 10.2
+  #  - 10.3
+  #  - 8.0
+  #  - 8.1
+  #  - 8.2
+  #  - 8.3
+  #  - 8.4
+  #  - 9.0
+  #  - 9.1
+  #  - 9.1
+  #  - 9.2
+  #  - 9.3
+    - name: Ubuntu
+      versions:
+  #  - all
+  #  - lucid
+  #  - maverick
+  #  - natty
+  #  - oneiric
+      - precise
+  #  - quantal
+  #  - raring
+  #  - saucy
+      - trusty
+  #  - utopic
+  #  - vivid
+  #  - wily
+      - xenial
+  #- name: SLES
+  #  versions:
+  #  - all
+  #  - 10SP3
+  #  - 10SP4
+  #  - 11
+  #  - 11SP1
+  #  - 11SP2
+  #  - 11SP3
+  #  - 11SP4
+  #  - 12
+  #  - 12SP1
+  #- name: GenericLinux
+  #  versions:
+  #  - all
+  #  - any
+  #- name: NXOS
+  #  versions:
+  #  - all
+  #  - any
+  #- name: Debian
+  #  versions:
+  #  - all
+  #  - etch
+  #  - jessie
+  #  - lenny
+  #  - sid
+  #  - squeeze
+  #  - stretch
+  #  - wheezy
+
+  galaxy_tags: []
+    # List tags for your role here, one per line. A tag is
+    # a keyword that describes and categorizes the role.
+    # Users find roles by searching for tags. Be sure to
+    # remove the '[]' above if you add tags to this list.
+    #
+    # NOTE: A tag is limited to a single word comprised of
+    # alphanumeric characters. Maximum 20 tags per role.
+
