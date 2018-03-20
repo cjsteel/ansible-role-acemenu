@@ -4,29 +4,34 @@ acemenu
 
 [![Build Status](https://travis-ci.org/cjsteel/ansible-role-acemenu.svg?branch=master)](https://travis-ci.org/cjsteel/ansible-role-acemenu)
 
-An Ansible role that installs a basic terminal based menu system. The role figures users home directories and works in LDAP environments as well.
+## Description
 
-The role sets up a sym link in `/etc/skel/bin/menu` pointing to `/etc/skel/bin/acemenu/menu.sh`
+The **acemenu** Ansible role that installs a text and webgui menu system that can be launched from the command line.
 
-The role can be configured to targets users within a specific range of UID's. (not enabled)
+Features:
 
-**IMPORTANT** - an `echo` command in ~/.bashrc or ~/.bash_aliases on CentOS 7 prevents Ansilbe from connecting. Further investigation is required
+* Installs to /etc/skel.
+* sets up a sym link `/etc/skel/bin/menu` pointing to `/etc/skel/bin/acemenu/menu.sh`
+  * When run this starts the text based menu system
+* sets up sym link `/etc/skel/bin/amenu` pointing to `/etc/skel/bin/acemenu/amenu.sh`
+  * When run launches a new Firefox instance that displays an HTML menu version using javascript to convert markdown to HTML.
+
+### Not implemented
+
+The role could be configured to targets users within a specific range of UID's. (not enabled at this time). `acemenu_uid_min` and `acemenu_uid_max` may be used to define the UID range of the users on remote systems that will have access to `acemenu`.
+
+### Tropubleshooting
+
+* In some situations an `echo` command in ~/.bashrc or ~/.bash_aliases on CentOS 7 prevents Ansible/SSH from connecting. Further investigation is required.
 
 
 Requirements
 ------------
 
-* Ansible version 2.0.
+* Ansible =<2.0.
     * Makes use of `blockinfile` extras module
 
-### Installing Ansible Via miniconda
-
-```shell
-conda create --name ansible -c kbroughton ansible=2.0.0.2
-source activate ansible
-```
-
-### Dependencies
+## Role Dependencies
 
 * https://github.com/cjsteel/ansible-role-clone
 * https://github.com/cjsteel/ansible-role-skel
@@ -34,9 +39,7 @@ source activate ansible
 Role Variables
 --------------
 
-Currently makes use of the following variables in defaults/main.yml.
-
-At some point in time `acemenu_uid_min` and `acemenu_uid_max` are used to define the UID range of the users on remote systems that will have access to `acemenu`.
+Currently makes use of the following variables in defaults/main.yml:
 
 ```yaml
 ---
